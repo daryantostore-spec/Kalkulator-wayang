@@ -3,17 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator Nama Wayang 1-100</title>
+<title>Kalkulator Nama Wayang + Weton + Jodoh</title>
+<meta property="og:title" content="Cek Karakter Wayang + Takdir Rezeki + Kecocokan">
+<meta property="og:description" content="Sistem Ha-Na-Ca-Ra-Ka + Weton Jawa + Numerologi">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#f5f5f5;padding:20px;line-height:1.6}
 .container{max-width:700px;margin:0 auto}
 h1{text-align:center;color:#d4af37;font-size:2.2em;margin-bottom:10px;text-shadow:0 0 10px rgba(212,175,55,0.5)}
-.subtitle{text-align:center;margin-bottom:30px;opacity:0.8;font-size:14px}
+.subtitle{text-align:center;margin-bottom:25px;opacity:0.8;font-size:14px}
 .card{background:#1a1a1a;border:2px solid #d4af37;border-radius:12px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.2)}
-input{width:100%;padding:18px;font-size:18px;background:#0a0a0a;border:2px solid #333;border-radius:8px;color:#fff;margin-bottom:15px}
+.label{color:#d4af37;font-size:14px;margin-bottom:8px;display:block}
+input{width:100%;padding:15px;font-size:16px;background:#0a0a0a;border:2px solid #333;border-radius:8px;color:#fff;margin-bottom:15px}
 input:focus{outline:none;border-color:#d4af37}
-button{width:100%;padding:18px;font-size:20px;font-weight:bold;background:#d4af37;color:#0a0a0a;border:none;border-radius:8px;cursor:pointer;transition:0.2s}
+.optional{opacity:0.7;font-size:12px}
+button{width:100%;padding:18px;font-size:20px;font-weight:bold;background:#d4af37;color:#0a0a0a;border:none;border-radius:8px;cursor:pointer;transition:0.2s;margin-top:10px}
 button:hover{background:#ffd700;transform:translateY(-2px)}
 #hasil{margin-top:25px;display:none}
 .hasil-card{background:#0a0a0a;border:1px solid #d4af37;border-radius:8px;padding:25px;margin-top:15px}
@@ -22,36 +26,41 @@ button:hover{background:#ffd700;transform:translateY(-2px)}
 .petung{font-size:1.5em;text-align:center;margin:20px 0;padding:15px;border-radius:8px;font-weight:bold}
 .sri{background:#2e7d32;color:#fff}.lungguh{background:#1565c0;color:#fff}.dunya{background:#f9a825;color:#000}
 .lara{background:#ef6c00;color:#fff}.pati{background:#c62828;color:#fff}
-.section{margin:15px 0}
-.label{color:#d4af37;font-weight:bold;font-size:14px}
-.desc{margin-top:5px;opacity:0.9}
+.section{margin:20px 0;padding-top:15px;border-top:1px solid #333}
+.section-title{color:#d4af37;font-weight:bold;font-size:16px;margin-bottom:10px}
+.desc{margin-top:5px;opacity:0.9;font-size:14px}
 .detail{background:#1a1a1a;padding:15px;border-radius:5px;margin-top:15px;font-size:14px}
 .detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #333}
 .share{width:100%;background:#25D366;color:#fff;margin-top:15px}
 .share:hover{background:#1ea952}
 .footer{text-align:center;margin-top:40px;opacity:0.5;font-size:13px}
+.badge{display:inline-block;background:#d4af37;color:#0a0a0a;padding:3px 10px;border-radius:12px;font-size:12px;margin:3px}
 </style>
 </head>
 <body>
 <div class="container">
-  <h1>🎭 KALKULATOR NAMA WAYANG 1-100 🎭</h1>
-  <p class="subtitle">Sistem Ha-Na-Ca-Ra-Ka Jawa + Petung Sri Lungguh Dunya Lara Pati</p>
+  <h1>🎭 KALKULATOR WAYANG KOMPLIT 🎭</h1>
+  <p class="subtitle">Nama + Weton + Kecocokan Jodoh | Sistem Ha-Na-Ca-Ra-Ka Asli</p>
 
   <div class="card">
-    <input type="text" id="nama" placeholder="Masukin nama lengkap lu..." value="MUHAMMAD AZHAR">
+    <label class="label">Nama Lengkap *</label>
+    <input type="text" id="nama" placeholder="Contoh: Rico Uzumaki Daryanto" value="Daryanto">
+
+    <label class="label">Tanggal Lahir <span class="optional">(Opsional - buat cek weton)</span></label>
+    <input type="date" id="tglLahir">
+
+    <label class="label">Nama Pasangan <span class="optional">(Opsional - buat cek kecocokan)</span></label>
+    <input type="text" id="pasangan" placeholder="Contoh: Lina Sofah">
+
     <button onclick="cekWayang()">CEK KARAKTER WAYANG GUE</button>
     <div id="hasil"></div>
   </div>
 
-  <p class="footer">100 Karakter Wayang Lengkap | daryantostore-spec.github.io</p>
+  <p class="footer">100 Karakter Wayang + Weton + Numerologi | Sistem Aksara Jawa</p>
 </div>
 
 <script>
-// Tabel nilai konsonan dasar Jawa. Vokal A,I,U,E,O diabaikan
-const AKSARA = {
-  'H':1,'N':2,'C':3,'R':4,'K':5,'D':6,'T':7,'S':8,'W':9,'L':10,
-  'P':11,'DH':12,'J':13,'Y':14,'NY':15,'M':16,'G':17,'B':28,'TH':29,'NG':20
-};
+const AKSARA = {'H':1,'N':2,'C':3,'R':4,'K':5,'D':6,'T':7,'S':8,'W':9,'L':10,'P':11,'DH':12,'J':13,'Y':14,'NY':15,'M':16,'G':17,'B':28,'TH':29,'NG':20};
 
 const WAYANG = {
 1:{nama:"Sang Hyang Wenang",sifat:"Pencipta, bijaksana",rezeki:"Sultan dari langit, rezeki nggak ada habisnya",saran:"Jadi pemimpin yang adil"},
@@ -164,24 +173,27 @@ const PETUNG = {
 0:{nama:"PATI",arti:"Hati-hati, banyak apes. Perbanyak sedekah",class:"pati"}
 };
 
+const PASARAN = ['Legi','Pahing','Pon','Wage','Kliwon'];
+const DINO = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const NEPTU_DINO = {Minggu:5,Senin:4,Selasa:3,Rabu:7,Kamis:8,Jumat:6,Sabtu:9};
+const NEPTU_PASARAN = {Legi:5,Pahing:9,Pon:7,Wage:4,Kliwon:8};
+
 function ambilSukuKata(text){
   text = text.toUpperCase().replace(/[^A-Z]/g,'');
   let hasil = [];
   let i = 0;
-
   while(i < text.length){
     let dua = text.substr(i,2);
-    // Prioritas: NG, NY, DH, TH dulu
     if(['NG','NY','DH','TH'].includes(dua)){
       hasil.push(dua);
       i += 2;
-      if(i < text.length && 'AIUEO'.includes(text[i])) i++; // skip vokal
+      if(i < text.length && 'AIUEO'.includes(text[i])) i++;
     } else if(AKSARA[text[i]]){
       hasil.push(text[i]);
       i++;
-      if(i < text.length && 'AIUEO'.includes(text[i])) i++; // skip vokal
+      if(i < text.length && 'AIUEO'.includes(text[i])) i++;
     } else {
-      i++; // skip kalo bukan aksara Jawa
+      i++;
     }
   }
   return hasil;
@@ -191,7 +203,6 @@ function hitungTotal(nama){
   let kata2 = nama.split(' ');
   let total = 0;
   let detail = [];
-
   kata2.forEach(kata => {
     let suku = ambilSukuKata(kata);
     let subtotal = 0;
@@ -207,9 +218,23 @@ function hitungTotal(nama){
   return {total, detail};
 }
 
+function hitungWeton(tgl){
+  if(!tgl) return null;
+  let d = new Date(tgl);
+  let hari = DINO[d.getDay()];
+  let epoch = new Date('1900-01-01');
+  let days = Math.floor((d - epoch) / 86400000);
+  let pasaran = PASARAN[(days + 4) % 5];
+  let neptu = NEPTU_DINO[hari] + NEPTU_PASARAN[pasaran];
+  return {hari, pasaran, neptu};
+}
+
 function cekWayang(){
   let nama = document.getElementById('nama').value.trim();
   if(!nama){alert('Isi nama dulu bro!');return}
+
+  let tglLahir = document.getElementById('tglLahir').value;
+  let pasangan = document.getElementById('pasangan').value.trim();
 
   let {total, detail} = hitungTotal(nama);
   let nomor = total - 50;
@@ -219,31 +244,20 @@ function cekWayang(){
   let w = WAYANG[nomor];
   let sisa = total % 5;
   let p = PETUNG[sisa];
+  let weton = tglLahir? hitungWeton(tglLahir) : null;
 
-  document.getElementById('hasil').innerHTML = `
+  let html = `
     <div class="hasil-card">
       <div class="nomor">${nomor}</div>
       <div class="nama-wayang">${w.nama}</div>
       <div class="petung ${p.class}">TAKDIR REZEKI: ${p.nama}</div>
 
       <div class="section">
-        <div class="label">✨ Sifat Karakter</div>
-        <div class="desc">${w.sifat}</div>
-      </div>
-
-      <div class="section">
-        <div class="label">💰 Rezeki & Hoki</div>
-        <div class="desc">${w.rezeki}</div>
-      </div>
-
-      <div class="section">
-        <div class="label">🎯 Saran Hidup</div>
-        <div class="desc">${w.saran}</div>
-      </div>
-
-      <div class="section">
-        <div class="label">🔮 Arti Petung ${p.nama}</div>
-        <div class="desc">${p.arti}</div>
+        <div class="section-title">🎭 Karakter Wayang</div>
+        <div class="desc"><b>Sifat:</b> ${w.sifat}</div>
+        <div class="desc"><b>Rezeki:</b> ${w.rezeki}</div>
+        <div class="desc"><b>Saran:</b> ${w.saran}</div>
+        <div class="desc"><b>Petung ${p.nama}:</b> ${p.arti}</div>
       </div>
 
       <div class="detail">
@@ -254,20 +268,52 @@ function cekWayang(){
       </div>
 
       <div class="detail">
-        <b>Breakdown Huruf:</b><br>
+        <b>Breakdown Konsonan:</b><br>
         ${detail.join('<br>')}
-      </div>
+      </div>`;
 
+  if(weton){
+    html += `
+      <div class="section">
+        <div class="section-title">📅 Weton Jawa</div>
+        <div class="desc"><b>${weton.hari} ${weton.pasaran}</b></div>
+        <div class="desc">Neptu: ${weton.neptu} <span class="badge">${weton.neptu < 10? 'Kecil' : weton.neptu < 15? 'Sedang' : 'Besar'}</span></div>
+        <div class="desc">Watak: ${weton.neptu <= 10? 'Pendiam, pemikir, rezeki naik-turun' : weton.neptu <= 14? 'Ramai, berwibawa, rezeki lancar' : 'Wibawa tinggi, pemimpin, rezeki gede'}</div>
+      </div>`;
+  }
+
+  if(pasangan){
+    let {total:totalP, detail:detailP} = hitungTotal(pasangan);
+    let nomorP = totalP - 50;
+    if(nomorP < 1) nomorP += 100;
+    if(nomorP > 100) nomorP = nomorP % 100 || 100;
+    let wP = WAYANG[nomorP];
+    let cocok = Math.abs(nomor - nomorP);
+    let skor = cocok < 10? 'Cocok Banget 🔥' : cocok < 30? 'Lumayan Klop 👍' : cocok < 50? 'Butuh Penyesuaian ⚖️' : 'Tantangan Berat ⚠️';
+
+    html += `
+      <div class="section">
+        <div class="section-title">💕 Kecocokan Jodoh</div>
+        <div class="desc"><b>${nama}</b> (${w.nama} No ${nomor})</div>
+        <div class="desc"><b>${pasangan}</b> (${wP.nama} No ${nomorP})</div>
+        <div class="desc" style="margin-top:10px"><b>Skor:</b> ${skor}</div>
+        <div class="desc">Selisih nomor: ${cocok}. Makin kecil makin klop energinya.</div>
+      </div>`;
+  }
+
+  html += `
       <button class="share" onclick="shareWA('${nama}',${nomor},'${w.nama}','${p.nama}')">
         Share ke WhatsApp 📱
       </button>
     </div>
   `;
+
+  document.getElementById('hasil').innerHTML = html;
   document.getElementById('hasil').style.display = 'block';
 }
 
 function shareWA(nama,nomor,wayang,petung){
-  let text = `Barusan cek nama "${nama}" dapet karakter wayang:\n\n🎭 ${wayang} No ${nomor}\n💰 Takdir Rezeki: ${petung}\n\nCek nama lu di: https://daryantostore-spec.github.io/Kalkulator-wayang/`;
+  let text = `Barusan cek nama "${nama}" dapet:\n\n🎭 ${wayang} No ${nomor}\n💰 Takdir Rezeki: ${petung}\n\nCek nama lu di: ${window.location.href}`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
 }
 
