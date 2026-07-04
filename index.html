@@ -3,32 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator Nama Wayang 1-100</title>
+<title>Kalkulator Nama Wayang - Aksara Jawa Asli</title>
+<meta property="og:title" content="Cek Karakter Wayang + Takdir Rezeki Lu!">
+<meta property="og:description" content="Sistem Ha-Na-Ca-Ra-Ka: A/I/U/E/O sama aja">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#f5f5f5;padding:20px;line-height:1.6}
 .container{max-width:700px;margin:0 auto}
 h1{text-align:center;color:#d4af37;font-size:2.2em;margin-bottom:10px;text-shadow:0 0 10px rgba(212,175,55,0.5)}
-.subtitle{text-align:center;margin-bottom:30px;opacity:0.8;font-size:14px}
+.subtitle{text-align:center;margin-bottom:10px;opacity:0.8;font-size:14px}
+.info{text-align:center;margin-bottom:25px;font-size:12px;opacity:0.6;background:#1a1a1a;padding:10px;border-radius:5px}
 .card{background:#1a1a1a;border:2px solid #d4af37;border-radius:12px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.2)}
 input{width:100%;padding:18px;font-size:18px;background:#0a0a0a;border:2px solid #333;border-radius:8px;color:#fff;margin-bottom:15px}
 input:focus{outline:none;border-color:#d4af37}
 button{width:100%;padding:18px;font-size:20px;font-weight:bold;background:#d4af37;color:#0a0a0a;border:none;border-radius:8px;cursor:pointer;transition:0.2s}
-button:hover{background:#ffd700}
+button:hover{background:#ffd700;transform:translateY(-2px)}
 #hasil{margin-top:25px;display:none}
 .hasil-card{background:#0a0a0a;border:1px solid #d4af37;border-radius:8px;padding:25px;margin-top:15px}
 .nomor{font-size:4em;color:#d4af37;text-align:center;font-weight:bold;margin:10px 0}
 .nama-wayang{font-size:2em;text-align:center;color:#ffd700;margin:15px 0}
-.tag{display:inline-block;background:#d4af37;color:#0a0a0a;padding:5px 15px;border-radius:20px;font-size:14px;margin:5px 0}
+.petung{font-size:1.5em;text-align:center;margin:20px 0;padding:15px;border-radius:8px;font-weight:bold}
+.sri{background:#2e7d32;color:#fff}.lungguh{background:#1565c0;color:#fff}.dunya{background:#f9a825;color:#000}
+.lara{background:#ef6c00;color:#fff}.pati{background:#c62828;color:#fff}
+.section{margin:15px 0}
+.label{color:#d4af37;font-weight:bold;font-size:14px}
+.desc{margin-top:5px;opacity:0.9}
 .detail{background:#1a1a1a;padding:15px;border-radius:5px;margin-top:15px;font-size:14px}
 .detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #333}
+.share{width:100%;background:#25D366;color:#fff;margin-top:15px}
+.share:hover{background:#1ea952}
 .footer{text-align:center;margin-top:40px;opacity:0.5;font-size:13px}
 </style>
 </head>
 <body>
 <div class="container">
   <h1>🎭 KALKULATOR NAMA WAYANG 1-100 🎭</h1>
-  <p class="subtitle">Sistem Ha-Na-Ca-Ra-Ka Jawa + Petung Sri Lungguh Dunya</p>
+  <p class="subtitle">Sistem Aksara Jawa Asli - Petung Sri Lungguh Dunya</p>
+  <div class="info">📝 Kaidah: HA=HO=HI=HU=HE sama nilai | RA=RO=RI=RU=RE sama nilai | Vokal A/I/U/E/O diabaikan</div>
 
   <div class="card">
     <input type="text" id="nama" placeholder="Masukin nama lengkap lu..." value="Rico Uzumaki Daryanto">
@@ -36,75 +47,155 @@ button:hover{background:#ffd700}
     <div id="hasil"></div>
   </div>
 
-  <p class="footer">100 Karakter Wayang Lengkap | Dibuat buat dulur-dulur Jawa</p>
+  <p class="footer">100 Karakter Wayang Lengkap | Sistem Ha-Na-Ca-Ra-Ka Asli</p>
 </div>
 
 <script>
-// Tabel Ha-Na-Ca-Ra-Ka versi lu
-const HNC = {HA:1,NA:2,CA:3,RA:4,KA:5,DA:6,TA:7,SA:8,WA:9,LA:10,PA:11,DHA:12,JA:13,YA:14,NYA:15,MA:16,GA:17,BA:28,THA:29,NGA:20,A:1,I:2,U:3,E:4,O:5};
+// TABEL NILAI KONSONAN DASAR JAWA - Vokal diabaikan
+const NILAI = {
+  'H':1,'N':2,'C':3,'R':4,'K':5,'D':6,'T':7,'S':8,'W':9,'L':10,
+  'P':11,'DH':12,'J':13,'Y':14,'NY':15,'M':16,'G':17,'B':28,'TH':29,'NG':20
+};
 
-// DATABASE LENGKAP 100 WAYANG
 const WAYANG = {
-1:"Sang Hyang Wenang - Dewa tertinggi, pencipta alam semesta",2:"Sang Hyang Tunggal - Cikal bakal semua dewa dan manusia",
-3:"Batara Guru - Raja kahyangan, pengatur nasib manusia",4:"Batara Narada - Dewa penasehat, pembawa wahyu",5:"Batara Bayu - Dewa angin, bapak Anoman",
-6:"Batara Brama - Dewa api, pencipta kehidupan",7:"Batara Indra - Dewa perang, penguasa surga",8:"Batara Wisnu - Dewa pemelihara, awatara Kresna",
-9:"Batara Kala - Dewa waktu & maut",10:"Batara Yamadipati - Dewa kematian, pencabut nyawa",
-11:"Batari Durga - Dewi pelebur angkara murka",12:"Dewi Sri - Dewi kemakmuran & padi",13:"Semar - Dewa ngejawantah, pengasuh Pandawa",
-14:"Gareng - Anak Semar, punakawan pincang",15:"Petruk - Anak Semar, punakawan cerdik",16:"Bagong - Anak Semar, punakawan lugu sakti",
-17:"Abiyasa - Resi sakti, kakek Pandawa-Kurawa",18:"Pandu Dewanata - Raja Hastina, bapak Pandawa",19:"Destarata - Raja buta, bapak Kurawa",
-20:"Widura - Anak abdi, penasehat bijak",21:"Dorna - Guru Pandawa-Kurawa, ahli senjata",22:"Bisma - Kakek Pandawa-Kurawa, tak bisa mati",
-23:"Yudhistira - Pandawa 1, raja Amarta, jujur",24:"Bima/Werkudara - Pandawa 2, paling kuat",25:"Arjuna - Pandawa 3, kesatria tampan sakti",
-26:"Nakula - Pandawa 4, ahli kuda & tampan",27:"Sadewa - Pandawa 5, ahli ternak & obat",28:"Drupadi - Istri Pandawa, cantik jelita",
-29:"Srikandi - Istri Arjuna, kesatria wanita",30:"Abimanyu - Anak Arjuna, gugur di Baratayuda",31:"Gatotkaca - Anak Bima, otot kawat balung wesi",
-32:"Antareja - Anak Bima, bisa hidup di tanah",33:"Antasena - Anak Bima, badan raksasa",34:"Wisanggeni - Anak Arjuna, api tak pernah padam",
-35:"Irawan - Anak Arjuna, dikorbankan perang",36:"Parikesit - Cucu Arjuna, penerus tahta Hastina",37:"Udawa - Penasehat Kresna, bijaksana",
-38:"Setyaki - Panglima Pandawa, murid Arjuna",39:"Duryudana - Kurawa 1, raja angkara murka",40:"Karna - Adipati Awangga, dermawan tapi salah kubu",
-41:"Sengkuni - Paman Kurawa, otak licik provokator",42:"Baladewa - Kakak Kresna, sakti mandraguna",43:"Kresna - Awatara Wisnu, raja Dwarawati",
-44:"Rama Wijaya - Raja Ayodya, awatara Wisnu",45:"Laksmana - Adik Rama, setia bela kakak",46:"Bharata - Adik Rama, wakil raja Ayodya",
-47:"Anoman - Kera putih, panglima Rama",48:"Jatayu - Burung garuda, bela Dewi Shinta",49:"Resi Subali - Pertapa sakti, raja kera",
-50:"Resi Gotama - Pertapa, suami Dewi Indradi",51:"Burisrawa - Kurawa, tangan buntung",52:"Jayadrata - Raja Sindu, suami Dursilawati",
-53:"Salya - Raja Mandaraka, paman Pandawa",54:"Krepa - Guru Kurawa, abadi",55:"Aswatama - Anak Dorna, licik pendendam",
-56:"Dursasana - Kurawa, narik rambut Drupadi",57:"Citraksa - Kurawa kembar, prajurit",58:"Citraksi - Kurawa kembar, prajurit",
-59:"Dewi Kunti - Ibu Pandawa, istri Pandu",60:"Dewi Madrim - Ibu Nakula-Sadewa",61:"Dewi Gendari - Ibu Kurawa, tutup mata",
-62:"Dewi Banowati - Istri Duryudana",63:"Dewi Surtikanti - Istri Karna",64:"Dewi Arimbi - Raksasi, istri Bima",
-65:"Dewi Sumbadra - Adik Kresna, istri Arjuna",66:"Dewi Ulupi - Putri naga, istri Arjuna",67:"Dewi Pergiwa - Istri Gatotkaca",
-68:"Dewi Mustakaweni - Raksasi sakti",69:"Dewi Shinta - Istri Rama, diculik Rahwana",70:"Dewi Trijata - Raksasi baik, rawat Shinta",
-71:"Rahwana - Raja Alengka, 10 kepala",72:"Sarpakenaka - Adik Rahwana, hidung buntung",73:"Marica - Paman Rahwana, jadi kijang emas",
-74:"Kala Rahu - Raksasa, nyaplok bulan",75:"Ramaparasu - Pendeta sakti, kapak besar",76:"Anila - Kera, anak Bayu",
-77:"Anggada - Kera, anak Subali",78:"Subali - Kera, raja Gua Kiskenda",79:"Sugriwa - Kera, adik Subali",
-80:"Jembawan - Beruang tua, panglima",81:"Kumbakarna - Adik Rahwana, tidur 6 bulan",82:"Wibisana - Adik Rahwana, bela kebenaran",
-83:"Indrajit - Anak Rahwana, ahli panah",84:"Trisirah - Raksasa kepala 3",85:"Prahasta - Patih Alengka",
-86:"Buto Terong - Raksasa lucu",87:"Buto Cakil - Raksasa gigi tonggos",88:"Togog - Punakawan kubu kiri",
-89:"Bilung - Anak Togog",90:"Limbuk - Emban gemuk lucu",91:"Cangik - Emban kurus bawel",
-92:"Cepot - Punakawan Sunda, anak Semar",93:"Dawala - Punakawan Sunda",94:"Cantrik - Murid pertapa",
-95:"Emban Cakil - Abdi raksasa",96:"Raden Sumantri - Patih sakti",97:"Raden Sukrasana - Patih jujur",
-98:"Raden Gathotkaca - Versi muda Gatotkaca",99:"Bambang Ekalaya - Murid Dorna, jari dipotong",100:"Jabang Tetuka - Bayi Gatotkaca, kebal kawah"
+1:{nama:"Sang Hyang Wenang",sifat:"Pencipta, bijaksana",rezeki:"Sultan dari langit, rezeki nggak ada habisnya",saran:"Jadi pemimpin yang adil"},
+2:{nama:"Sang Hyang Tunggal",sifat:"Cikal bakal, pemersatu",rezeki:"Rezeki dari nol jadi puncak",saran:"Jangan sombong kalo udah sukses"},
+3:{nama:"Batara Guru",sifat:"Tegas, pengatur nasib",rezeki:"Wibawa = duit, omongan lu jadi cuan",saran:"Jaga amanah"},
+4:{nama:"Batara Narada",sifat:"Penasehat, pembawa kabar",rezeki:"Rezeki dari mulut & info",saran:"Cocok jadi konsultan/MC"},
+5:{nama:"Batara Bayu",sifat:"Cepat, lincah",rezeki:"Cuan dari kecepatan & networking",saran:"Jangan nunda kerjaan"},
+6:{nama:"Batara Brama",sifat:"Pencipta, kreatif, api semangat",rezeki:"Rezeki dari ide & karya. Tajir kalo jadi kreator",saran:"Bakar semangat, jangan mager"},
+7:{nama:"Batara Indra",sifat:"Panglima perang, berani",rezeki:"Rezeki dari keberanian ambil resiko",saran:"Gas pol kalo ada peluang"},
+8:{nama:"Batara Wisnu",sifat:"Pemelihara, penolong",rezeki:"Rezeki ngalir karena nolong orang",saran:"Banyak sedekah"},
+9:{nama:"Batara Kala",sifat:"Tegas, disiplin waktu",rezeki:"Duit dateng kalo on-time",saran:"Jangan ngaret"},
+10:{nama:"Batara Yamadipati",sifat:"Adil, nggak pandang bulu",rezeki:"Rezeki halal, awet",saran:"Jauhi yang haram"},
+11:{nama:"Batari Durga",sifat:"Galak tapi pelindung",rezeki:"Cuan dari lindungin orang lemah",saran:"Cocok jadi lawyer/aktivis"},
+12:{nama:"Dewi Sri",sifat:"Pembawa kemakmuran",rezeki:"Tangan dingin, dagang auto laris",saran:"Cocok usaha sembako/kuliner"},
+13:{nama:"Semar",sifat:"Rendah hati tapi sakti",rezeki:"Rezeki diam-diam ngalir deres",saran:"Jangan pamer"},
+14:{nama:"Gareng",sifat:"Cacat tapi pinter",rezeki:"Kekurangan jadi kelebihan cuan",saran:"Jual kekurangan lu"},
+15:{nama:"Petruk",sifat:"Cerdik, panjang tangan",rezeki:"Otak licin = duit gampang",saran:"Cocok marketing"},
+16:{nama:"Bagong",sifat:"Lugu, jujur",rezeki:"Rezeki dari kejujuran",saran:"Jangan bohong"},
+17:{nama:"Abiyasa",sifat:"Sakti, resi",rezeki:"Rezeki dari ilmu & doa",saran:"Jadi guru/dosen"},
+18:{nama:"Pandu Dewanata",sifat:"Raja bijak",rezeki:"Warisan gede",saran:"Kelola aset baik-baik"},
+19:{nama:"Destarata",sifat:"Buta mata tapi sayang anak",rezeki:"Rezeki kehalang emosi",saran:"Kontrol amarah"},
+20:{nama:"Widura",sifat:"Bijak, penasehat",rezeki:"Cuan dari nasehatin orang kaya",saran:"Jadi konsultan"},
+21:{nama:"Dorna",sifat:"Guru sakti tapi dendam",rezeki:"Rezeki dari ngajar, tapi ati-ati karma",saran:"Ikhlas ngajar"},
+22:{nama:"Bisma",sifat:"Tak bisa mati, setia",rezeki:"Rezeki abadi, anti bangkrut",saran:"Jaga komitmen"},
+23:{nama:"Yudhistira",sifat:"Jujur, bijaksana",rezeki:"Rezeki halal berkah 7 turunan",saran:"Jangan bohong sekali pun"},
+24:{nama:"Bima",sifat:"Kuat, jujur, gampang marah",rezeki:"Gebuk sekali, masalah minggat + cuan dateng",saran:"Kontrol emosi"},
+25:{nama:"Arjuna",sifat:"Tampan, sakti, banyak istri",rezeki:"Cuan dari skill + ganteng",saran:"Cocok jadi public figure"},
+26:{nama:"Nakula",sifat:"Tampan, ahli kuda",rezeki:"Rezeki dari hobi otomotif/hewan",saran:"Bisnis petshop/bengkel"},
+27:{nama:"Sadewa",sifat:"Ahli ternak & obat",rezeki:"Cuan dari peternakan/farmasi",saran:"Cocok dokter hewan"},
+28:{nama:"Drupadi",sifat:"Cantik, kuat mental",rezeki:"Rezeki dari ketabahan",saran:"Ujian berat = naik level"},
+29:{nama:"Srikandi",sifat:"Wanita perkasa",rezeki:"Cewek karir tajir melintir",saran:"Gaspol kerja"},
+30:{nama:"Abimanyu",sifat:"Muda berani, gugur syahid",rezeki:"Muda udah tajir tapi umur pendek",saran:"Perbanyak amal"},
+31:{nama:"Gatotkaca",sifat:"Otot kawat balung wesi",rezeki:"Kebal bangkrut, krisis = kesempatan",saran:"Invest pas orang takut"},
+32:{nama:"Antareja",sifat:"Bisa hidup di tanah",rezeki:"Rezeki dari properti/tanah",saran:"Main tanah"},
+33:{nama:"Antasena",sifat:"Badan raksasa",rezeki:"Modal gede, cuan gede",saran:"Jangan main kecil"},
+34:{nama:"Wisanggeni",sifat:"Api tak pernah padam",rezeki:"Semangat = duit, jangan kendor",saran:"Side hustle banyak"},
+35:{nama:"Irawan",sifat:"Dikorbankan",rezeki:"Sukses abis dikorbanin",saran:"Ikhlas dulu"},
+36:{nama:"Parikesit",sifat:"Penerus tahta",rezeki:"Warisan + usaha sendiri = sultan",saran:"Jangan cuma andalin warisan"},
+37:{nama:"Udawa",sifat:"Penasehat bijak",rezeki:"Dibayar mahal buat mikir",saran:"Jual otak"},
+38:{nama:"Setyaki",sifat:"Panglima setia",rezeki:"Loyal = naik pangkat",saran:"Jangan kutu loncat"},
+39:{nama:"Duryudana",sifat:"Ambisius, angkara",rezeki:"Tajir tapi serakah = hancur",saran:"Kontrol nafsu"},
+40:{nama:"Karna",sifat:"Dermawan, setia",rezeki:"Makin sedekah makin kaya",saran:"Sedekah tiap hari"},
+41:{nama:"Sengkuni",sifat:"Licik, provokator",rezeki:"Cuan dari mulut, tapi karma pedes",saran:"Tobat bro"},
+42:{nama:"Baladewa",sifat:"Keras, sakti mandraguna",rezeki:"Duit dari kekuatan fisik",saran:"Cocok gym/olahraga"},
+43:{nama:"Kresna",sifat:"Cerdik, awatara",rezeki:"Otak politik = cuan politik",saran:"Main strategis"},
+44:{nama:"Rama Wijaya",sifat:"Raja adil, berwibawa",rezeki:"Sultan dari lahir, rezeki halal",saran:"Jaga nama baik"},
+45:{nama:"Laksmana",sifat:"Setia, pembela",rezeki:"Rezeki dari jagain bos",saran:"Jadi orang kepercayaan"},
+46:{nama:"Bharata",sifat:"Wakil raja, jujur",rezeki:"Dapat kepercayaan = dapat proyek",saran:"Jaga amanah"},
+47:{nama:"Anoman",sifat:"Gesit, loyal, kuat",rezeki:"Cuan dari hal tak terduga",saran:"Ambil job dadakan"},
+48:{nama:"Jatayu",sifat:"Pemberani, bela kebenaran",rezeki:"Rezeki dari bela orang lemah",saran:"Jadi whistleblower"},
+49:{nama:"Resi Subali",sifat:"Sakti, raja kera",rezeki:"Cuan dari kesaktian",saran:"Jual skill langka"},
+50:{nama:"Resi Gotama",sifat:"Pertapa, bijak",rezeki:"Rezeki dari tapa/puasa",saran:"Perbanyak ibadah"},
+51:{nama:"Burisrawa",sifat:"Tangan buntung tapi setia",rezeki:"Cacat bukan halangan cuan",saran:"Manfaatin kekurangan"},
+52:{nama:"Jayadrata",sifat:"Bunuh diri karena malu",rezeki:"Gengsi = bangkrut",saran:"Jangan gengsian"},
+53:{nama:"Salya",sifat:"Sengkuni 2.0",rezeki:"Duit dari ngomporin",saran:"Bahasa halus tapi nusuk"},
+54:{nama:"Krepa",sifat:"Guru abadi",rezeki:"Ilmu = passive income",saran:"Bikin course online"},
+55:{nama:"Aswatama",sifat:"Dendam, licik",rezeki:"Dendam = nutup rezeki",saran:"Maafin orang"},
+56:{nama:"Dursasana",sifat:"Jahat ke wanita",rezeki:"Karma berat, rezeki seret",saran:"Hormati wanita"},
+57:{nama:"Citraksa",sifat:"Prajurit biasa",rezeki:"Rezeki cukup-cukup",saran:"Syukuri"},
+58:{nama:"Citraksi",sifat:"Prajurit biasa",rezeki:"Rezeki cukup-cukup",saran:"Syukuri"},
+59:{nama:"Dewi Kunti",sifat:"Ibu sakti, sabar",rezeki:"Rezeki dari sabar rawat anak",saran:"Invest ke anak"},
+60:{nama:"Dewi Madrim",sifat:"Ibu baik",rezeki:"Rezeki dari kasih sayang",saran:"Bisnis keluarga"},
+61:{nama:"Dewi Gendari",sifat:"Tutup mata",rezeki:"Ikhlas = dibukain jalan",saran:"Jangan liat kekurangan"},
+62:{nama:"Dewi Banowati",sifat:"Cantik, rebutan",rezeki:"Cuan dari kecantikan",saran:"Jadi beauty influencer"},
+63:{nama:"Dewi Surtikanti",sifat:"Setia sama Karna",rezeki:"Setia = rezeki awet",saran:"Jangan selingkuh"},
+64:{nama:"Dewi Arimbi",sifat:"Raksasi jadi cantik",rezeki:"Transformasi = cuan",saran:"Rebranding diri"},
+65:{nama:"Dewi Sumbadra",sifat:"Adik Kresna",rezeki:"Koneksi orang gede",saran:"Manfaatin relasi"},
+66:{nama:"Dewi Ulupi",sifat:"Putri naga",rezeki:"Rezeki dari dunia mistis",saran:"Bisnis spiritual"},
+67:{nama:"Dewi Pergiwa",sifat:"Istri Gatotkaca",rezeki:"Suami tajir",saran:"Pinter pilih suami"},
+68:{nama:"Dewi Mustakaweni",sifat:"Raksasi sakti",rezeki:"Sakti = ditakutin = dihormatin",saran:"Bangun personal brand"},
+69:{nama:"Dewi Shinta",sifat:"Setia, cantik",rezeki:"Ujian dulu baru sultan",saran:"Sabar dalam ujian"},
+70:{nama:"Dewi Trijata",sifat:"Raksasi baik",rezeki:"Baik sama orang = dibales semesta",saran:"Tebar kebaikan"},
+71:{nama:"Rahwana",sifat:"10 kepala, sakti",rezeki:"10 sumber income",saran:"Multiple income stream"},
+72:{nama:"Sarpakenaka",sifat:"Hidung buntung",rezeki:"Aib jadi pelajaran cuan",saran:"Konten aib"},
+73:{nama:"Marica",sifat:"Jadi kijang emas",rezeki:"Tipu daya = duit",saran:"Marketing gimmick"},
+74:{nama:"Kala Rahu",sifat:"Nyaplok bulan",rezeki:"Ambil peluang gede",saran:"Akuisisi"},
+75:{nama:"Ramaparasu",sifat:"Pendeta kapak",rezeki:"Keras = ditakutin = cuan",saran:"Tegas nego"},
+76:{nama:"Anila",sifat:"Anak Bayu, gesit",rezeki:"Cepat = menang tender",saran:"Speed execution"},
+77:{nama:"Anggada",sifat:"Anak Subali",rezeki:"Warisan ortu sakti",saran:"Lanjutin bisnis ortu"},
+78:{nama:"Subali",sifat:"Raja kera sakti",rezeki:"Kekuatan = kekuasaan = duit",saran:"Build otot & otak"},
+79:{nama:"Sugriwa",sifat:"Adik Subali",rezeki:"Dibantu temen = naik",saran:"Kolaborasi"},
+80:{nama:"Jembawan",sifat:"Beruang tua bijak",rezeki:"Pengalaman = mahal",saran:"Jual pengalaman"},
+81:{nama:"Kumbakarna",sifat:"Jujur, tidur 6 bulan",rezeki:"Kerja keras 6 bulan, libur 6 bulan",saran:"Work life balance"},
+82:{nama:"Wibisana",sifat:"Bela kebenaran",rezeki:"Integritas = trust = proyek",saran:"Jaga nama"},
+83:{nama:"Indrajit",sifat:"Ahli panah",rezeki:"Skill dewa = bayaran dewa",saran:"Asah 1 skill sampe expert"},
+84:{nama:"Trisirah",sifat:"Kepala 3",rezeki:"3 otak = 3x cuan",saran:"Multitasking"},
+85:{nama:"Prahasta",sifat:"Patih setia",rezeki:"Tangan kanan bos = tajir",saran:"Jadi asisten sultan"},
+86:{nama:"Buto Terong",sifat:"Lucu",rezeki:"Bikin orang ketawa = duit",saran:"Jadi komedian"},
+87:{nama:"Buto Cakil",sifat:"Gigi tonggos, licik",rezeki:"Jelek tapi pinter = cuan",saran:"Personal branding unik"},
+88:{nama:"Togog",sifat:"Punakawan kiri",rezeki:"Kritis = dibayar",saran:"Jadi konsultan"},
+89:{nama:"Bilung",sifat:"Anak Togog",rezeki:"Nerusin ortu",saran:"Bisnis keluarga"},
+90:{nama:"Limbuk",sifat:"Emban gemuk lucu",rezeki:"Gendut = hoki",saran:"Body positivity"},
+91:{nama:"Cangik",sifat:"Emban kurus bawel",rezeki:"Nyinyir = viral = duit",saran:"Jadi komentator"},
+92:{nama:"Cepot",sifat:"Punakawan Sunda lucu",rezeki:"Sunda = kreatif = cuan",saran:"Konten lokal"},
+93:{nama:"Dawala",sifat:"Punakawan Sunda",rezeki:"Lokal pride",saran:"Angkat budaya"},
+94:{nama:"Cantrik",sifat:"Murid pertapa",rezeki:"Lagi magang, ntar jadi master",saran:"Sabar belajar"},
+95:{nama:"Emban Cakil",sifat:"Abdi raksasa",rezeki:"Kerja kasar = duit kasar",saran:"Jangan gengsi"},
+96:{nama:"Raden Sumantri",sifat:"Patih sakti",rezeki:"Orang kedua tapi tajir",saran:"Jadi COO"},
+97:{nama:"Raden Sukrasana",sifat:"Patih jujur",rezeki:"Jujur = dipercaya megang duit",saran:"Jadi bendahara"},
+98:{nama:"Raden Gathotkaca",sifat:"Bisa terbang",rezeki:"Ide out of the box = cuan gila",saran:"Think different"},
+99:{nama:"Bambang Ekalaya",sifat:"Jari dipotong, tetap sakti",rezeki:"Keterbatasan bukan halangan",saran:"Belajar otodidak"},
+100:{nama:"Jabang Tetuka",sifat:"Bayi kebal kawah",rezeki:"Krisis bikin tambah kuat + tajir",saran:"Mental baja"}
 };
 
 const PETUNG = {
-1:{nama:"SRI",arti:"Kemakmuran, rezeki melimpah, hidup bahagia"},
-2:{nama:"LUNGGUH",arti:"Kedudukan stabil, pangkat naik, dihormati"},
-3:{nama:"DUNYA",arti:"Kekayaan, keberuntungan, hidup berkecukupan"},
-4:{nama:"LARA",arti:"Banyak rintangan & ujian, tapi kalo lolos jadi kuat"},
-0:{nama:"PATI",arti:"Hati-hati, banyak apes. Perbanyak sedekah"}
+1:{nama:"SRI",arti:"Kemakmuran, rezeki melimpah, hidup bahagia",class:"sri"},
+2:{nama:"LUNGGUH",arti:"Kedudukan stabil, pangkat naik, dihormati",class:"lungguh"},
+3:{nama:"DUNYA",arti:"Kekayaan, keberuntungan, hidup berkecukupan",class:"dunya"},
+4:{nama:"LARA",arti:"Banyak rintangan & ujian, tapi kalo lolos jadi kuat",class:"lara"},
+0:{nama:"PATI",arti:"Hati-hati, banyak apes. Perbanyak sedekah",class:"pati"}
 };
 
-function pecahSukuKata(text){
+// Fungsi pecah kata jadi konsonan dasar Jawa - Vokal diabaikan
+function pecahKonsonan(text){
   text = text.toUpperCase().replace(/[^A-Z]/g,'');
-  let hasil = []; let i = 0;
+  let hasil = [];
+  let i = 0;
+
   while(i < text.length){
-    let found = false;
-    if(i+2 < text.length){
-      let tri = text.substr(i,3);
-      if(HNC[tri]){ hasil.push(tri); i+=3; found=true; }
+    // Cek 2 huruf: NG, NY, DH, TH
+    if(i+1 < text.length){
+      let dua = text.substr(i,2);
+      if(NILAI[dua]){
+        hasil.push(dua);
+        i+=2;
+        // Skip vokal A/I/U/E/O setelahnya
+        if(i < text.length && 'AIUEO'.includes(text[i])) i++;
+        continue;
+      }
     }
-    if(!found && i+1 < text.length){
-      let dwi = text.substr(i,2);
-      if(HNC[dwi]){ hasil.push(dwi); i+=2; found=true; }
-    }
-    if(!found){
-      if(HNC[text[i]]) hasil.push(text[i]);
+
+    // Cek 1 huruf: H,N,C,R,K,D,T,S,W,L,P,J,Y,M,G,B
+    let satu = text[i];
+    if(NILAI[satu]){
+      hasil.push(satu);
       i++;
+      // Skip vokal A/I/U/E/O setelahnya
+      if(i < text.length && 'AIUEO'.includes(text[i])) i++;
+    } else {
+      i++; // skip kalo bukan konsonan Jawa
     }
   }
   return hasil;
@@ -112,14 +203,17 @@ function pecahSukuKata(text){
 
 function hitungTotal(nama){
   let kata2 = nama.split(' ');
-  let total = 0; let detail = [];
+  let total = 0;
+  let detail = [];
+
   kata2.forEach(kata => {
-    let suku = pecahSukuKata(kata);
-    let subtotal = 0; let breakdown = [];
-    suku.forEach(s => {
-      let n = HNC[s] || 0;
+    let konsonan = pecahKonsonan(kata);
+    let subtotal = 0;
+    let breakdown = [];
+    konsonan.forEach(k => {
+      let n = NILAI[k] || 0;
       subtotal += n;
-      breakdown.push(`${s}=${n}`);
+      breakdown.push(`${k}=${n}`);
     });
     total += subtotal;
     detail.push(`${kata}: ${breakdown.join('+')} = ${subtotal}`);
@@ -136,34 +230,59 @@ function cekWayang(){
   if(nomor < 1) nomor += 100;
   if(nomor > 100) nomor = nomor % 100 || 100;
 
-  let karakter = WAYANG[nomor];
+  let w = WAYANG[nomor];
   let sisa = total % 5;
-  let petung = PETUNG[sisa];
-
-  let [namaW, desc] = karakter.split(' - ');
+  let p = PETUNG[sisa];
 
   document.getElementById('hasil').innerHTML = `
     <div class="hasil-card">
       <div class="nomor">${nomor}</div>
-      <div class="nama-wayang">${namaW}</div>
-      <p style="text-align:center;margin-bottom:20px"><span class="tag">${petung.nama}</span></p>
-      <p><b>Deskripsi:</b> ${desc}</p>
-      <p><b>Takdir Rezeki:</b> ${petung.arti}</p>
+      <div class="nama-wayang">${w.nama}</div>
+      <div class="petung ${p.class}">TAKDIR REZEKI: ${p.nama}</div>
+
+      <div class="section">
+        <div class="label">✨ Sifat Karakter</div>
+        <div class="desc">${w.sifat}</div>
+      </div>
+
+      <div class="section">
+        <div class="label">💰 Rezeki & Hoki</div>
+        <div class="desc">${w.rezeki}</div>
+      </div>
+
+      <div class="section">
+        <div class="label">🎯 Saran Hidup</div>
+        <div class="desc">${w.saran}</div>
+      </div>
+
+      <div class="section">
+        <div class="label">🔮 Arti Petung ${p.nama}</div>
+        <div class="desc">${p.arti}</div>
+      </div>
 
       <div class="detail">
         <div class="detail-row"><span>Nama Lengkap</span><span>${nama}</span></div>
         <div class="detail-row"><span>Total Ha-Na-Ca-Ra-Ka</span><span>${total}</span></div>
         <div class="detail-row"><span>Rumus Wayang</span><span>${total} - 50 = ${nomor}</span></div>
-        <div class="detail-row"><span>Petung 5</span><span>${total} ÷ 5 sisa ${sisa} = ${petung.nama}</span></div>
+        <div class="detail-row"><span>Petung 5</span><span>${total} ÷ 5 sisa ${sisa} = ${p.nama}</span></div>
       </div>
 
       <div class="detail">
-        <b>Breakdown Huruf:</b><br>
+        <b>Breakdown Konsonan:</b><br>
         ${detail.join('<br>')}
       </div>
+
+      <button class="share" onclick="shareWA('${nama}',${nomor},'${w.nama}','${p.nama}')">
+        Share ke WhatsApp 📱
+      </button>
     </div>
   `;
   document.getElementById('hasil').style.display = 'block';
+}
+
+function shareWA(nama,nomor,wayang,petung){
+  let text = `Barusan cek nama "${nama}" dapet:\n\n🎭 ${wayang} No ${nomor}\n💰 Takdir Rezeki: ${petung}\n\nCek nama lu di: https://daryantostore-spec.github.io/Kalkulator-wayang/`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
 }
 
 window.onload = () => cekWayang();
