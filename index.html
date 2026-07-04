@@ -3,16 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kalkulator Nama Wayang - Aksara Jawa Asli</title>
-<meta property="og:title" content="Cek Karakter Wayang + Takdir Rezeki Lu!">
-<meta property="og:description" content="Sistem Ha-Na-Ca-Ra-Ka: A/I/U/E/O sama aja">
+<title>Kalkulator Nama Wayang 1-100</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#f5f5f5;padding:20px;line-height:1.6}
 .container{max-width:700px;margin:0 auto}
 h1{text-align:center;color:#d4af37;font-size:2.2em;margin-bottom:10px;text-shadow:0 0 10px rgba(212,175,55,0.5)}
-.subtitle{text-align:center;margin-bottom:10px;opacity:0.8;font-size:14px}
-.info{text-align:center;margin-bottom:25px;font-size:12px;opacity:0.6;background:#1a1a1a;padding:10px;border-radius:5px}
+.subtitle{text-align:center;margin-bottom:30px;opacity:0.8;font-size:14px}
 .card{background:#1a1a1a;border:2px solid #d4af37;border-radius:12px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.2)}
 input{width:100%;padding:18px;font-size:18px;background:#0a0a0a;border:2px solid #333;border-radius:8px;color:#fff;margin-bottom:15px}
 input:focus{outline:none;border-color:#d4af37}
@@ -38,21 +35,20 @@ button:hover{background:#ffd700;transform:translateY(-2px)}
 <body>
 <div class="container">
   <h1>🎭 KALKULATOR NAMA WAYANG 1-100 🎭</h1>
-  <p class="subtitle">Sistem Aksara Jawa Asli - Petung Sri Lungguh Dunya</p>
-  <div class="info">📝 Kaidah: HA=HO=HI=HU=HE sama nilai | RA=RO=RI=RU=RE sama nilai | Vokal A/I/U/E/O diabaikan</div>
+  <p class="subtitle">Sistem Ha-Na-Ca-Ra-Ka Jawa + Petung Sri Lungguh Dunya Lara Pati</p>
 
   <div class="card">
-    <input type="text" id="nama" placeholder="Masukin nama lengkap lu..." value="Rico Uzumaki Daryanto">
+    <input type="text" id="nama" placeholder="Masukin nama lengkap lu..." value="MUHAMMAD AZHAR">
     <button onclick="cekWayang()">CEK KARAKTER WAYANG GUE</button>
     <div id="hasil"></div>
   </div>
 
-  <p class="footer">100 Karakter Wayang Lengkap | Sistem Ha-Na-Ca-Ra-Ka Asli</p>
+  <p class="footer">100 Karakter Wayang Lengkap | daryantostore-spec.github.io</p>
 </div>
 
 <script>
-// TABEL NILAI KONSONAN DASAR JAWA - Vokal diabaikan
-const NILAI = {
+// Tabel nilai konsonan dasar Jawa. Vokal A,I,U,E,O diabaikan
+const AKSARA = {
   'H':1,'N':2,'C':3,'R':4,'K':5,'D':6,'T':7,'S':8,'W':9,'L':10,
   'P':11,'DH':12,'J':13,'Y':14,'NY':15,'M':16,'G':17,'B':28,'TH':29,'NG':20
 };
@@ -168,34 +164,24 @@ const PETUNG = {
 0:{nama:"PATI",arti:"Hati-hati, banyak apes. Perbanyak sedekah",class:"pati"}
 };
 
-// Fungsi pecah kata jadi konsonan dasar Jawa - Vokal diabaikan
-function pecahKonsonan(text){
+function ambilSukuKata(text){
   text = text.toUpperCase().replace(/[^A-Z]/g,'');
   let hasil = [];
   let i = 0;
 
   while(i < text.length){
-    // Cek 2 huruf: NG, NY, DH, TH
-    if(i+1 < text.length){
-      let dua = text.substr(i,2);
-      if(NILAI[dua]){
-        hasil.push(dua);
-        i+=2;
-        // Skip vokal A/I/U/E/O setelahnya
-        if(i < text.length && 'AIUEO'.includes(text[i])) i++;
-        continue;
-      }
-    }
-
-    // Cek 1 huruf: H,N,C,R,K,D,T,S,W,L,P,J,Y,M,G,B
-    let satu = text[i];
-    if(NILAI[satu]){
-      hasil.push(satu);
+    let dua = text.substr(i,2);
+    // Prioritas: NG, NY, DH, TH dulu
+    if(['NG','NY','DH','TH'].includes(dua)){
+      hasil.push(dua);
+      i += 2;
+      if(i < text.length && 'AIUEO'.includes(text[i])) i++; // skip vokal
+    } else if(AKSARA[text[i]]){
+      hasil.push(text[i]);
       i++;
-      // Skip vokal A/I/U/E/O setelahnya
-      if(i < text.length && 'AIUEO'.includes(text[i])) i++;
+      if(i < text.length && 'AIUEO'.includes(text[i])) i++; // skip vokal
     } else {
-      i++; // skip kalo bukan konsonan Jawa
+      i++; // skip kalo bukan aksara Jawa
     }
   }
   return hasil;
@@ -207,13 +193,13 @@ function hitungTotal(nama){
   let detail = [];
 
   kata2.forEach(kata => {
-    let konsonan = pecahKonsonan(kata);
+    let suku = ambilSukuKata(kata);
     let subtotal = 0;
     let breakdown = [];
-    konsonan.forEach(k => {
-      let n = NILAI[k] || 0;
+    suku.forEach(s => {
+      let n = AKSARA[s] || 0;
       subtotal += n;
-      breakdown.push(`${k}=${n}`);
+      breakdown.push(`${s}=${n}`);
     });
     total += subtotal;
     detail.push(`${kata}: ${breakdown.join('+')} = ${subtotal}`);
@@ -268,7 +254,7 @@ function cekWayang(){
       </div>
 
       <div class="detail">
-        <b>Breakdown Konsonan:</b><br>
+        <b>Breakdown Huruf:</b><br>
         ${detail.join('<br>')}
       </div>
 
@@ -281,7 +267,7 @@ function cekWayang(){
 }
 
 function shareWA(nama,nomor,wayang,petung){
-  let text = `Barusan cek nama "${nama}" dapet:\n\n🎭 ${wayang} No ${nomor}\n💰 Takdir Rezeki: ${petung}\n\nCek nama lu di: https://daryantostore-spec.github.io/Kalkulator-wayang/`;
+  let text = `Barusan cek nama "${nama}" dapet karakter wayang:\n\n🎭 ${wayang} No ${nomor}\n💰 Takdir Rezeki: ${petung}\n\nCek nama lu di: https://daryantostore-spec.github.io/Kalkulator-wayang/`;
   window.open(`https://wa.me/?text=${encodeURIComponent(text)}`);
 }
 
