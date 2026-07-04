@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Nama Wayang 1-100</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;background:#0a0a0a;color:#f5f5f5;padding:20px;line-height:1.6}
+.container{max-width:700px;margin:0 auto}
+h1{text-align:center;color:#d4af37;font-size:2.2em;margin-bottom:10px;text-shadow:0 0 10px rgba(212,175,55,0.5)}
+.subtitle{text-align:center;margin-bottom:30px;opacity:0.8;font-size:14px}
+.card{background:#1a1a1a;border:2px solid #d4af37;border-radius:12px;padding:30px;box-shadow:0 0 30px rgba(212,175,55,0.2)}
+input{width:100%;padding:18px;font-size:18px;background:#0a0a0a;border:2px solid #333;border-radius:8px;color:#fff;margin-bottom:15px}
+input:focus{outline:none;border-color:#d4af37}
+button{width:100%;padding:18px;font-size:20px;font-weight:bold;background:#d4af37;color:#0a0a0a;border:none;border-radius:8px;cursor:pointer;transition:0.2s}
+button:hover{background:#ffd700}
+#hasil{margin-top:25px;display:none}
+.hasil-card{background:#0a0a0a;border:1px solid #d4af37;border-radius:8px;padding:25px;margin-top:15px}
+.nomor{font-size:4em;color:#d4af37;text-align:center;font-weight:bold;margin:10px 0}
+.nama-wayang{font-size:2em;text-align:center;color:#ffd700;margin:15px 0}
+.tag{display:inline-block;background:#d4af37;color:#0a0a0a;padding:5px 15px;border-radius:20px;font-size:14px;margin:5px 0}
+.detail{background:#1a1a1a;padding:15px;border-radius:5px;margin-top:15px;font-size:14px}
+.detail-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #333}
+.footer{text-align:center;margin-top:40px;opacity:0.5;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>🎭 KALKULATOR NAMA WAYANG 1-100 🎭</h1>
+  <p class="subtitle">Sistem Ha-Na-Ca-Ra-Ka Jawa + Petung Sri Lungguh Dunya</p>
+
+  <div class="card">
+    <input type="text" id="nama" placeholder="Masukin nama lengkap lu..." value="Rico Uzumaki Daryanto">
+    <button onclick="cekWayang()">CEK KARAKTER WAYANG GUE</button>
+    <div id="hasil"></div>
+  </div>
+
+  <p class="footer">100 Karakter Wayang Lengkap | Dibuat buat dulur-dulur Jawa</p>
+</div>
+
+<script>
+// Tabel Ha-Na-Ca-Ra-Ka versi lu
+const HNC = {HA:1,NA:2,CA:3,RA:4,KA:5,DA:6,TA:7,SA:8,WA:9,LA:10,PA:11,DHA:12,JA:13,YA:14,NYA:15,MA:16,GA:17,BA:28,THA:29,NGA:20,A:1,I:2,U:3,E:4,O:5};
+
+// DATABASE LENGKAP 100 WAYANG
+const WAYANG = {
+1:"Sang Hyang Wenang - Dewa tertinggi, pencipta alam semesta",2:"Sang Hyang Tunggal - Cikal bakal semua dewa dan manusia",
+3:"Batara Guru - Raja kahyangan, pengatur nasib manusia",4:"Batara Narada - Dewa penasehat, pembawa wahyu",5:"Batara Bayu - Dewa angin, bapak Anoman",
+6:"Batara Brama - Dewa api, pencipta kehidupan",7:"Batara Indra - Dewa perang, penguasa surga",8:"Batara Wisnu - Dewa pemelihara, awatara Kresna",
+9:"Batara Kala - Dewa waktu & maut",10:"Batara Yamadipati - Dewa kematian, pencabut nyawa",
+11:"Batari Durga - Dewi pelebur angkara murka",12:"Dewi Sri - Dewi kemakmuran & padi",13:"Semar - Dewa ngejawantah, pengasuh Pandawa",
+14:"Gareng - Anak Semar, punakawan pincang",15:"Petruk - Anak Semar, punakawan cerdik",16:"Bagong - Anak Semar, punakawan lugu sakti",
+17:"Abiyasa - Resi sakti, kakek Pandawa-Kurawa",18:"Pandu Dewanata - Raja Hastina, bapak Pandawa",19:"Destarata - Raja buta, bapak Kurawa",
+20:"Widura - Anak abdi, penasehat bijak",21:"Dorna - Guru Pandawa-Kurawa, ahli senjata",22:"Bisma - Kakek Pandawa-Kurawa, tak bisa mati",
+23:"Yudhistira - Pandawa 1, raja Amarta, jujur",24:"Bima/Werkudara - Pandawa 2, paling kuat",25:"Arjuna - Pandawa 3, kesatria tampan sakti",
+26:"Nakula - Pandawa 4, ahli kuda & tampan",27:"Sadewa - Pandawa 5, ahli ternak & obat",28:"Drupadi - Istri Pandawa, cantik jelita",
+29:"Srikandi - Istri Arjuna, kesatria wanita",30:"Abimanyu - Anak Arjuna, gugur di Baratayuda",31:"Gatotkaca - Anak Bima, otot kawat balung wesi",
+32:"Antareja - Anak Bima, bisa hidup di tanah",33:"Antasena - Anak Bima, badan raksasa",34:"Wisanggeni - Anak Arjuna, api tak pernah padam",
+35:"Irawan - Anak Arjuna, dikorbankan perang",36:"Parikesit - Cucu Arjuna, penerus tahta Hastina",37:"Udawa - Penasehat Kresna, bijaksana",
+38:"Setyaki - Panglima Pandawa, murid Arjuna",39:"Duryudana - Kurawa 1, raja angkara murka",40:"Karna - Adipati Awangga, dermawan tapi salah kubu",
+41:"Sengkuni - Paman Kurawa, otak licik provokator",42:"Baladewa - Kakak Kresna, sakti mandraguna",43:"Kresna - Awatara Wisnu, raja Dwarawati",
+44:"Rama Wijaya - Raja Ayodya, awatara Wisnu",45:"Laksmana - Adik Rama, setia bela kakak",46:"Bharata - Adik Rama, wakil raja Ayodya",
+47:"Anoman - Kera putih, panglima Rama",48:"Jatayu - Burung garuda, bela Dewi Shinta",49:"Resi Subali - Pertapa sakti, raja kera",
+50:"Resi Gotama - Pertapa, suami Dewi Indradi",51:"Burisrawa - Kurawa, tangan buntung",52:"Jayadrata - Raja Sindu, suami Dursilawati",
+53:"Salya - Raja Mandaraka, paman Pandawa",54:"Krepa - Guru Kurawa, abadi",55:"Aswatama - Anak Dorna, licik pendendam",
+56:"Dursasana - Kurawa, narik rambut Drupadi",57:"Citraksa - Kurawa kembar, prajurit",58:"Citraksi - Kurawa kembar, prajurit",
+59:"Dewi Kunti - Ibu Pandawa, istri Pandu",60:"Dewi Madrim - Ibu Nakula-Sadewa",61:"Dewi Gendari - Ibu Kurawa, tutup mata",
+62:"Dewi Banowati - Istri Duryudana",63:"Dewi Surtikanti - Istri Karna",64:"Dewi Arimbi - Raksasi, istri Bima",
+65:"Dewi Sumbadra - Adik Kresna, istri Arjuna",66:"Dewi Ulupi - Putri naga, istri Arjuna",67:"Dewi Pergiwa - Istri Gatotkaca",
+68:"Dewi Mustakaweni - Raksasi sakti",69:"Dewi Shinta - Istri Rama, diculik Rahwana",70:"Dewi Trijata - Raksasi baik, rawat Shinta",
+71:"Rahwana - Raja Alengka, 10 kepala",72:"Sarpakenaka - Adik Rahwana, hidung buntung",73:"Marica - Paman Rahwana, jadi kijang emas",
+74:"Kala Rahu - Raksasa, nyaplok bulan",75:"Ramaparasu - Pendeta sakti, kapak besar",76:"Anila - Kera, anak Bayu",
+77:"Anggada - Kera, anak Subali",78:"Subali - Kera, raja Gua Kiskenda",79:"Sugriwa - Kera, adik Subali",
+80:"Jembawan - Beruang tua, panglima",81:"Kumbakarna - Adik Rahwana, tidur 6 bulan",82:"Wibisana - Adik Rahwana, bela kebenaran",
+83:"Indrajit - Anak Rahwana, ahli panah",84:"Trisirah - Raksasa kepala 3",85:"Prahasta - Patih Alengka",
+86:"Buto Terong - Raksasa lucu",87:"Buto Cakil - Raksasa gigi tonggos",88:"Togog - Punakawan kubu kiri",
+89:"Bilung - Anak Togog",90:"Limbuk - Emban gemuk lucu",91:"Cangik - Emban kurus bawel",
+92:"Cepot - Punakawan Sunda, anak Semar",93:"Dawala - Punakawan Sunda",94:"Cantrik - Murid pertapa",
+95:"Emban Cakil - Abdi raksasa",96:"Raden Sumantri - Patih sakti",97:"Raden Sukrasana - Patih jujur",
+98:"Raden Gathotkaca - Versi muda Gatotkaca",99:"Bambang Ekalaya - Murid Dorna, jari dipotong",100:"Jabang Tetuka - Bayi Gatotkaca, kebal kawah"
+};
+
+const PETUNG = {
+1:{nama:"SRI",arti:"Kemakmuran, rezeki melimpah, hidup bahagia"},
+2:{nama:"LUNGGUH",arti:"Kedudukan stabil, pangkat naik, dihormati"},
+3:{nama:"DUNYA",arti:"Kekayaan, keberuntungan, hidup berkecukupan"},
+4:{nama:"LARA",arti:"Banyak rintangan & ujian, tapi kalo lolos jadi kuat"},
+0:{nama:"PATI",arti:"Hati-hati, banyak apes. Perbanyak sedekah"}
+};
+
+function pecahSukuKata(text){
+  text = text.toUpperCase().replace(/[^A-Z]/g,'');
+  let hasil = []; let i = 0;
+  while(i < text.length){
+    let found = false;
+    if(i+2 < text.length){
+      let tri = text.substr(i,3);
+      if(HNC[tri]){ hasil.push(tri); i+=3; found=true; }
+    }
+    if(!found && i+1 < text.length){
+      let dwi = text.substr(i,2);
+      if(HNC[dwi]){ hasil.push(dwi); i+=2; found=true; }
+    }
+    if(!found){
+      if(HNC[text[i]]) hasil.push(text[i]);
+      i++;
+    }
+  }
+  return hasil;
+}
+
+function hitungTotal(nama){
+  let kata2 = nama.split(' ');
+  let total = 0; let detail = [];
+  kata2.forEach(kata => {
+    let suku = pecahSukuKata(kata);
+    let subtotal = 0; let breakdown = [];
+    suku.forEach(s => {
+      let n = HNC[s] || 0;
+      subtotal += n;
+      breakdown.push(`${s}=${n}`);
+    });
+    total += subtotal;
+    detail.push(`${kata}: ${breakdown.join('+')} = ${subtotal}`);
+  });
+  return {total, detail};
+}
+
+function cekWayang(){
+  let nama = document.getElementById('nama').value.trim();
+  if(!nama){alert('Isi nama dulu bro!');return}
+
+  let {total, detail} = hitungTotal(nama);
+  let nomor = total - 50;
+  if(nomor < 1) nomor += 100;
+  if(nomor > 100) nomor = nomor % 100 || 100;
+
+  let karakter = WAYANG[nomor];
+  let sisa = total % 5;
+  let petung = PETUNG[sisa];
+
+  let [namaW, desc] = karakter.split(' - ');
+
+  document.getElementById('hasil').innerHTML = `
+    <div class="hasil-card">
+      <div class="nomor">${nomor}</div>
+      <div class="nama-wayang">${namaW}</div>
+      <p style="text-align:center;margin-bottom:20px"><span class="tag">${petung.nama}</span></p>
+      <p><b>Deskripsi:</b> ${desc}</p>
+      <p><b>Takdir Rezeki:</b> ${petung.arti}</p>
+
+      <div class="detail">
+        <div class="detail-row"><span>Nama Lengkap</span><span>${nama}</span></div>
+        <div class="detail-row"><span>Total Ha-Na-Ca-Ra-Ka</span><span>${total}</span></div>
+        <div class="detail-row"><span>Rumus Wayang</span><span>${total} - 50 = ${nomor}</span></div>
+        <div class="detail-row"><span>Petung 5</span><span>${total} ÷ 5 sisa ${sisa} = ${petung.nama}</span></div>
+      </div>
+
+      <div class="detail">
+        <b>Breakdown Huruf:</b><br>
+        ${detail.join('<br>')}
+      </div>
+    </div>
+  `;
+  document.getElementById('hasil').style.display = 'block';
+}
+
+window.onload = () => cekWayang();
+</script>
+</body>
+</html>
